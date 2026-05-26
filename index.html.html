@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LoveDecode — AI Relationship Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#E8446A;
+  --rose-light:#FCEEF2;
+  --rose-mid:#F7C0CF;
+  --mauve:#7C5C8A;
+  --mauve-light:#F0EAF5;
+  --cream:#FDF8F5;
+  --dark:#1A1018;
+  --muted:#7A6878;
+  --border:#E8DDE5;
+  --card:#FFFFFF;
+  --r:16px;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream);
+  color:var(--dark);
+}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto;position:relative}
+.nav{
+  flex-shrink:0;
+  background:rgba(253,248,245,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:50;
+}
+.logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--rose),var(--mauve));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo em{font-style:italic}
+.nav-cta{background:var(--rose);color:#fff;border:none;border-radius:100px;padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.page{display:none;padding:16px}
+.page.active{display:block}
+
+.tabbar{
+  flex-shrink:0;
+  background:rgba(253,248,245,0.97);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index:50;
+}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;border:none;background:none;color:var(--muted);font-size:10px;font-family:'DM Sans',sans-serif;transition:color .2s}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{color:var(--rose)}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:28px 8px 20px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--rose-light);color:var(--rose);font-size:12px;font-weight:500;border-radius:100px;padding:6px 14px;margin-bottom:18px}
+.hero h1{font-family:'Playfair Display',serif;font-size:30px;line-height:1.22;font-weight:700;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:var(--rose)}
+.hero p{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:22px}
+.hero-actions{display:flex;flex-direction:column;gap:10px}
+.btn-primary{background:linear-gradient(135deg,var(--rose),#C4355A);color:#fff;border:none;border-radius:100px;padding:14px 24px;font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:opacity .15s}
+.btn-primary:active{opacity:.85}
+.btn-secondary{background:var(--card);color:var(--dark);border:1.5px solid var(--border);border-radius:100px;padding:13px 24px;font-size:15px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s}
+.btn-secondary:hover{background:var(--rose-light)}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--rose)}
+.stat-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── SECTION ── */
+.section-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.section-sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+
+/* ── FEATURE CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden}
+.feature-card:active{transform:scale(0.97)}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.fc-rose::before{background:linear-gradient(90deg,var(--rose),#F97BA3)}
+.fc-mauve::before{background:linear-gradient(90deg,var(--mauve),#A87CC4)}
+.fc-gold::before{background:linear-gradient(90deg,#C98A2E,#E5B253)}
+.fc-teal::before{background:linear-gradient(90deg,#2E9E8A,#54C4B0)}
+.card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:19px}
+.ci-rose{background:var(--rose-light);color:var(--rose)}
+.ci-mauve{background:var(--mauve-light);color:var(--mauve)}
+.ci-gold{background:#FDF3E0;color:#B87A1A}
+.ci-teal{background:#E0F5F2;color:#1E8A7C}
+.feature-card h3{font-size:13px;font-weight:500;margin-bottom:4px}
+.feature-card p{font-size:11px;color:var(--muted);line-height:1.45}
+
+/* ── VIRAL BANNER ── */
+.viral-banner{background:linear-gradient(135deg,#1A1018,#3D1F3A);border-radius:var(--r);padding:20px;margin-bottom:22px;color:#fff;position:relative;overflow:hidden}
+.viral-banner::after{content:'❤️';position:absolute;right:-8px;top:-8px;font-size:80px;opacity:.1;transform:rotate(15deg)}
+.viral-banner h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px}
+.viral-banner p{font-size:13px;opacity:.7;margin-bottom:14px;line-height:1.5}
+.viral-btn{background:var(--rose);color:#fff;border:none;border-radius:100px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ── PILLS ── */
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s}
+.pill:hover,.pill.active{background:var(--rose-light);color:var(--rose);border-color:var(--rose-mid)}
+
+/* ── CHAT ── */
+.chat-modes{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+.chat-modes::-webkit-scrollbar{display:none}
+.mode-chip{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap;color:var(--muted)}
+.mode-chip.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+
+.chat-messages{display:flex;flex-direction:column;gap:12px;margin-bottom:14px;min-height:320px}
+.msg{max-width:84%;display:flex;flex-direction:column;gap:3px}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.ai{align-self:flex-start}
+.bubble{padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.6}
+.msg.user .bubble{background:linear-gradient(135deg,var(--rose),#C4355A);color:#fff;border-bottom-right-radius:4px}
+.msg.ai .bubble{background:var(--card);border:1px solid var(--border);color:var(--dark);border-bottom-left-radius:4px}
+.msg-time{font-size:10px;color:var(--muted)}
+
+.typing{display:flex;gap:4px;padding:14px 15px;background:var(--card);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;width:64px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
+
+.chat-input-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:100px;display:flex;align-items:center;padding:8px 8px 8px 16px;gap:8px}
+.chat-input{flex:1;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none}
+.chat-input::placeholder{color:var(--muted)}
+.send-btn{width:36px;height:36px;border-radius:50%;background:var(--rose);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── ANALYZE ── */
+.upload-zone{border:2px dashed var(--rose-mid);border-radius:var(--r);padding:36px 20px;text-align:center;background:var(--rose-light);cursor:pointer;margin-bottom:18px;transition:all .2s}
+.upload-zone:hover{border-color:var(--rose);background:#F5E0E7}
+.upload-icon{font-size:38px;margin-bottom:12px}
+.upload-zone h3{font-size:15px;font-weight:500;margin-bottom:6px}
+.upload-zone p{font-size:12px;color:var(--muted)}
+#fileInput{display:none}
+
+.analysis-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.meter-row{margin-bottom:13px}
+.meter-label{display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px}
+.meter-label span:last-child{font-weight:500;color:var(--rose)}
+.meter-track{height:6px;background:#F0E8ED;border-radius:100px;overflow:hidden}
+.meter-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--rose),#F97BA3);width:0;transition:width .8s ease}
+.flag-chip{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:5px 11px;font-size:11px;margin:3px}
+.flag-red{background:#FCEEF2;color:#C4355A}
+.flag-green{background:#E5F5EE;color:#1E7A4A}
+.flag-amber{background:#FDF3E0;color:#A86A10}
+
+/* ── PROFILE ── */
+.profile-header{background:linear-gradient(135deg,var(--rose),var(--mauve));border-radius:var(--r);padding:24px 20px;color:#fff;margin-bottom:18px;text-align:center}
+.avatar{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;border:3px solid rgba(255,255,255,.4)}
+.profile-name{font-size:19px;font-weight:500;margin-bottom:3px}
+.profile-sub{font-size:12px;opacity:.75}
+.attach-badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:100px;padding:5px 14px;font-size:12px;margin-top:10px}
+
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.plan-card.featured{border:2px solid var(--rose)}
+.plan-badge{background:var(--rose);color:#fff;font-size:11px;padding:3px 12px;border-radius:100px;display:inline-block;margin-bottom:10px}
+.plan-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.plan-name{font-size:15px;font-weight:500}
+.plan-price{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--rose)}
+.plan-price span{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--muted)}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+.plan-features li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.plan-features li::before{content:'✓';color:var(--rose);font-weight:700;flex-shrink:0}
+.upgrade-btn{background:linear-gradient(135deg,var(--rose),#C4355A);color:#fff;border:none;border-radius:100px;width:100%;padding:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:14px}
+.upgrade-btn.mauve{background:linear-gradient(135deg,var(--mauve),#A87CC4)}
+
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px}
+.setting-row:last-child{border-bottom:none}
+.toggle{width:44px;height:24px;background:var(--rose);border-radius:100px;position:relative;cursor:pointer;flex-shrink:0}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:right .2s}
+.toggle.off{background:#D9D0D6}
+.toggle.off::after{right:calc(100% - 21px)}
+
+/* ── AI STATUS ── */
+.ai-status{display:inline-flex;align-items:center;gap:6px;background:var(--rose-light);color:var(--rose);font-size:11px;padding:4px 12px;border-radius:100px;margin-bottom:14px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--rose);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── QUICK PROMPTS ── */
+.quick-prompts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.qp-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--muted);cursor:pointer;text-align:left;transition:all .2s;font-family:'DM Sans',sans-serif}
+.qp-btn:hover{border-color:var(--rose-mid);color:var(--rose);background:var(--rose-light)}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="logo">Love<em>Decode</em></div>
+    <button class="nav-cta" onclick="goTo('chat')">Start Free ✨</button>
+  </nav>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- ═══ HOME PAGE ═══ -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-badge">💗 AI Relationship Intelligence</div>
+        <h1>Understand your<br><em>relationships</em><br>like never before</h1>
+        <p>AI-powered emotional analysis, chat decoding, red flag detection, and relationship coaching — all in one place.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="goTo('chat')">💬 Start AI Chat — Free</button>
+          <button class="btn-secondary" onclick="goTo('analyze')">📸 Analyze a Screenshot</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num">2.4M</div><div class="stat-label">Chats Decoded</div></div>
+        <div class="stat-card"><div class="stat-num">94%</div><div class="stat-label">Accuracy</div></div>
+        <div class="stat-card"><div class="stat-num">180+</div><div class="stat-label">Countries</div></div>
+      </div>
+
+      <div class="section-title">What can I help with?</div>
+      <div class="section-sub">Pick any mode to get started</div>
+
+      <div class="card-grid">
+        <div class="feature-card fc-rose" onclick="setMode('Dating Coach');goTo('chat')">
+          <div class="card-icon ci-rose">💘</div>
+          <h3>Dating Coach</h3>
+          <p>Navigate attraction, texting & first dates</p>
+        </div>
+        <div class="feature-card fc-mauve" onclick="goTo('analyze')">
+          <div class="card-icon ci-mauve">🚩</div>
+          <h3>Red Flag Scanner</h3>
+          <p>Detect manipulation & toxic patterns</p>
+        </div>
+        <div class="feature-card fc-gold" onclick="setMode('Breakup Recovery');goTo('chat')">
+          <div class="card-icon ci-gold">💔</div>
+          <h3>Breakup Recovery</h3>
+          <p>Heal, process emotions & move forward</p>
+        </div>
+        <div class="feature-card fc-teal" onclick="setMode('Reply Generator');goTo('chat')">
+          <div class="card-icon ci-teal">💬</div>
+          <h3>Reply Generator</h3>
+          <p>Perfect responses for any situation</p>
+        </div>
+      </div>
+
+      <div class="viral-banner">
+        <h3>Who loves more? 👀</h3>
+        <p>Upload your chat and our AI reveals who is more emotionally invested — shareable result included.</p>
+        <button class="viral-btn" onclick="goTo('analyze')">Try It Free →</button>
+      </div>
+
+      <div class="section-title" style="margin-bottom:12px">All tools</div>
+      <div class="pills">
+        <div class="pill" onclick="setMode('Attachment Style Test');goTo('chat')">📎 Attachment Style Test</div>
+        <div class="pill" onclick="setMode('Decode Their Mind');goTo('chat')">🔮 Decode Their Mind</div>
+        <div class="pill" onclick="setMode('Flirting Coach');goTo('chat')">🔥 Flirting Coach</div>
+        <div class="pill" onclick="setMode('Couple Mode');goTo('chat')">👫 Couple Mode</div>
+        <div class="pill" onclick="setMode('Emotional Support');goTo('chat')">🌿 Emotional Support</div>
+        <div class="pill" onclick="setMode('Confidence Coach');goTo('chat')">💪 Confidence Coach</div>
+        <div class="pill" onclick="setMode('Toxic Detector');goTo('chat')">🧠 Toxic Detector</div>
+      </div>
+    </div>
+
+    <!-- ═══ CHAT PAGE ═══ -->
+    <div class="page" id="page-chat">
+      <div class="ai-status"><span class="ai-dot"></span> AI Coach is online</div>
+
+      <div class="chat-modes" id="modeChips">
+        <div class="mode-chip active" onclick="selectMode(this,'Dating Coach')">💘 Dating Coach</div>
+        <div class="mode-chip" onclick="selectMode(this,'Breakup Recovery')">💔 Breakup</div>
+        <div class="mode-chip" onclick="selectMode(this,'Flirting Coach')">🔥 Flirting</div>
+        <div class="mode-chip" onclick="selectMode(this,'Decode Their Mind')">🧠 Decode Mind</div>
+        <div class="mode-chip" onclick="selectMode(this,'Reply Generator')">💬 Reply Gen</div>
+        <div class="mode-chip" onclick="selectMode(this,'Emotional Support')">🌿 Support</div>
+      </div>
+
+      <div class="quick-prompts" id="quickPrompts">
+        <button class="qp-btn" onclick="sendQuick(this)">💭 My partner has been cold lately...</button>
+        <button class="qp-btn" onclick="sendQuick(this)">📱 Should I text first or wait?</button>
+        <button class="qp-btn" onclick="sendQuick(this)">😔 We keep fighting about the same things</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">
+          <div class="bubble">Hi! 💕 I'm your AI relationship coach. Tell me what's going on — whether it's texting anxiety, a confusing situationship, a breakup, or anything in between. I'm here to help. 🌸</div>
+          <div class="msg-time">Just now</div>
+        </div>
+      </div>
+
+      <div class="chat-input-wrap">
+        <input class="chat-input" id="chatInput" placeholder="What's going on in your relationship?" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}">
+        <button class="send-btn" onclick="sendMessage()" aria-label="Send">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ ANALYZE PAGE ═══ -->
+    <div class="page" id="page-analyze">
+      <div class="section-title">Screenshot Analyzer</div>
+      <div class="section-sub">Upload any WhatsApp, Instagram or iMessage chat</div>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">📸</div>
+        <h3>Tap to upload screenshot</h3>
+        <p>JPG, PNG supported · Your privacy is protected</p>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleUpload(event)">
+      </div>
+
+      <div style="text-align:center;margin-bottom:18px">
+        <button class="btn-secondary" style="width:auto;padding:10px 24px;font-size:13px" onclick="runDemo()">✨ See demo analysis</button>
+      </div>
+
+      <div id="analysisOutput" style="display:none">
+        <div class="analysis-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:42px;height:42px;background:var(--rose-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">🧠</div>
+            <div>
+              <div style="font-weight:500;font-size:15px" id="analysisTitle">AI Analysis Complete</div>
+              <div style="font-size:12px;color:var(--muted)" id="analysisSubtitle">Analyzed 47 messages · 3 sec</div>
+            </div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-label"><span>Interest Level</span><span id="m1v">73%</span></div>
+            <div class="meter-track"><div class="meter-fill" id="m1" data-val="73"></div></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-label"><span>Emotional Investment</span><span id="m2v">68%</span></div>
+            <div class="meter-track"><div class="meter-fill" id="m2" data-val="68"></div></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-label"><span>Who Loves More (You)</span><span id="m3v">61%</span></div>
+            <div class="meter-track"><div class="meter-fill" id="m3" data-val="61"></div></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-label"><span>Relationship Health</span><span id="m4v">55%</span></div>
+            <div class="meter-track"><div class="meter-fill" id="m4" data-val="55"></div></div>
+          </div>
+        </div>
+
+        <div class="analysis-card">
+          <div style="font-weight:500;font-size:15px;margin-bottom:12px">🚩 Patterns Detected</div>
+          <div id="flagsContainer">
+            <span class="flag-chip flag-red">🚩 Dry texting</span>
+            <span class="flag-chip flag-red">🚩 Breadcrumbing</span>
+            <span class="flag-chip flag-amber">⚠️ Hot &amp; cold</span>
+            <span class="flag-chip flag-green">✓ Good humor match</span>
+            <span class="flag-chip flag-green">✓ Initiates sometimes</span>
+          </div>
+        </div>
+
+        <div class="analysis-card">
+          <div style="font-weight:500;font-size:15px;margin-bottom:10px">💡 AI Insight</div>
+          <p style="font-size:14px;line-height:1.7;color:var(--muted)" id="insightText">They show moderate interest but aren't fully emotionally available. The dry texting pattern suggests they're distracted or guarded — not necessarily uninterested. Try creating curiosity rather than chasing — ask an open question and give space.</p>
+        </div>
+
+        <button class="btn-primary" onclick="goTo('chat')" style="margin-bottom:10px">💬 Ask AI for Advice →</button>
+        <button class="btn-secondary">📤 Share My Result</button>
+      </div>
+    </div>
+
+    <!-- ═══ PROFILE PAGE ═══ -->
+    <div class="page" id="page-profile">
+      <div class="profile-header">
+        <div class="avatar">🌸</div>
+        <div class="profile-name">Your Profile</div>
+        <div class="profile-sub">Free Plan · 3 chats remaining today</div>
+        <div class="attach-badge">📎 Anxious-Secure Blend</div>
+      </div>
+
+      <div class="section-title" style="margin-bottom:14px">Upgrade Plan</div>
+
+      <div class="plan-card featured">
+        <div class="plan-badge">✨ Most Popular</div>
+        <div class="plan-header">
+          <div><div class="plan-name">Premium</div><div style="font-size:12px;color:var(--muted)">Everything you need</div></div>
+          <div class="plan-price">₹299<span>/mo</span></div>
+        </div>
+        <ul class="plan-features">
+          <li>Unlimited AI coaching chats</li>
+          <li>Unlimited screenshot analysis</li>
+          <li>Relationship score dashboard</li>
+          <li>Red flag &amp; manipulation scanner</li>
+          <li>AI reply generator</li>
+        </ul>
+        <button class="upgrade-btn">Upgrade to Premium →</button>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <div><div class="plan-name">AI Voice Calls</div><div style="font-size:12px;color:var(--muted)">Like Astrotalk, but smarter</div></div>
+          <div class="plan-price">₹5<span>/min</span></div>
+        </div>
+        <ul class="plan-features">
+          <li>Real-time AI voice relationship coach</li>
+          <li>Pay only for what you use</li>
+          <li>Available 24/7, no waiting</li>
+        </ul>
+        <button class="upgrade-btn mauve">Start a Voice Call →</button>
+      </div>
+
+      <div class="section-title" style="margin-bottom:4px;margin-top:8px">Settings</div>
+      <div class="plan-card">
+        <div class="setting-row"><span>Notifications</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+        <div class="setting-row"><span>Private Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+        <div class="setting-row"><span>Daily Relationship Tips</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+        <div class="setting-row"><span>Dark Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+      </div>
+    </div>
+
+  </div><!-- end scroll-area -->
+
+  <!-- TAB BAR -->
+  <div class="tabbar">
+    <button class="tab active" id="tab-home" onclick="goTo('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </button>
+    <button class="tab" id="tab-chat" onclick="goTo('chat')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg>
+      Coach
+    </button>
+    <button class="tab" id="tab-analyze" onclick="goTo('analyze')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Analyze
+    </button>
+    <button class="tab" id="tab-profile" onclick="goTo('profile')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </button>
+  </div>
+</div>
+
+<script>
+// ── CHANGE THIS TO YOUR API URL AFTER DEPLOYMENT ──
+// If using Netlify: 'https://lovedecode.netlify.app/.netlify/functions/chat'
+// If using Vercel:  'https://lovedecode.vercel.app/api/chat'
+// For local testing: leave as '/api/chat' or paste key directly (ONLY for testing!)
+const API_URL = '/api/chat';
+
+// ── NEVER put your real API key here in production ──
+// For quick local testing ONLY (delete before going live):
+const OPENAI_KEY_TEST = ''; // paste sk-... here ONLY for local testing
+
+let currentMode = 'Dating Coach';
+let chatHistory = [];
+let isThinking = false;
+
+// ── NAVIGATION ──
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('tab-' + page).classList.add('active');
+  document.getElementById('scrollArea').scrollTop = 0;
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-chip').forEach(c => {
+    c.classList.toggle('active', c.textContent.includes(mode.split(' ')[0]));
+  });
+}
+
+function selectMode(el, mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  chatHistory = [];
+  const msgs = document.getElementById('chatMessages');
+  const qp = document.getElementById('quickPrompts');
+  msgs.innerHTML = `<div class="msg ai"><div class="bubble">Switched to <strong>${mode}</strong> mode 💕 What's on your mind?</div></div>`;
+  qp.style.display = 'flex';
+  updateQuickPrompts(mode);
+}
+
+function updateQuickPrompts(mode) {
+  const prompts = {
+    'Dating Coach': ['💭 My partner has been cold lately...','📱 Should I text first or wait?','😔 We keep fighting about the same things'],
+    'Breakup Recovery': ['💔 I can\'t stop thinking about them','😶 How do I move on after a breakup?','🔁 Should I get back with my ex?'],
+    'Flirting Coach': ['🔥 How do I flirt without being cringe?','💬 Give me an opener for someone I like','😏 How to keep the conversation interesting'],
+    'Reply Generator': ['📱 They left me on read — what do I say?','💬 Give me a flirty reply to this message','🤝 How to respond to a dry texter'],
+    'Decode Their Mind': ['🧠 Why did they suddenly go cold?','❓ Are they interested or just friendly?','😶 They say one thing but do another'],
+    'Emotional Support': ['😢 I feel so lonely right now','💭 I\'m confused about my feelings','🌿 I need someone to talk to'],
+  };
+  const qp = document.getElementById('quickPrompts');
+  const list = prompts[mode] || prompts['Dating Coach'];
+  qp.innerHTML = list.map(p => `<button class="qp-btn" onclick="sendQuick(this)">${p}</button>`).join('');
+}
+
+function sendQuick(btn) {
+  document.getElementById('chatInput').value = btn.textContent.replace(/^[^\s]+\s/,'');
+  document.getElementById('quickPrompts').style.display = 'none';
+  sendMessage();
+}
+
+// ── CHAT ──
+const systemPrompts = {
+  'Dating Coach': 'You are LoveDecode, a warm, emotionally intelligent AI dating coach. Give concise, empathetic advice in 2-4 sentences. Be direct but kind. Use 1 emoji max. Never give harmful advice.',
+  'Breakup Recovery': 'You are LoveDecode, a compassionate breakup recovery coach. Help the user process grief and heal. Be gentle, validating, and practical. 2-4 sentences.',
+  'Flirting Coach': 'You are LoveDecode, a fun, confident flirting coach. Give playful, practical tips. Keep energy light and positive. 2-4 sentences.',
+  'Reply Generator': 'You are LoveDecode, a texting strategist. Give exactly 3 reply options: one warm, one playful, one confident. Format as Option 1: ... / Option 2: ... / Option 3: ...',
+  'Decode Their Mind': 'You are LoveDecode, a behavioral analyst. Analyze the described behavior and predict possible emotions, intentions, and attraction level. Be insightful and balanced. 3-5 sentences.',
+  'Emotional Support': 'You are LoveDecode, an empathetic emotional support companion. Listen, validate feelings, and gently guide. Warm and non-judgmental. Never diagnose or replace therapy.',
+  'Couple Mode': 'You are LoveDecode, a couples therapist AI. Help improve communication and resolve conflicts. Fair, balanced, empathetic. 3-5 sentences.',
+  'Confidence Coach': 'You are LoveDecode, a self-confidence coach for relationships. Build the user\'s confidence and self-worth. Empowering and practical. 2-4 sentences.',
+  'Toxic Detector': 'You are LoveDecode, a relationship safety expert. Identify potential toxic, manipulative, or unhealthy patterns in the described situation. Be factual, clear, and supportive.',
+  'Attachment Style Test': 'You are LoveDecode, a relationship psychologist. Ask the user questions to identify their attachment style (anxious, avoidant, secure, fearful-avoidant). Guide them gently through the discovery.',
+};
+
+const fallbackReplies = [
+  "That's really common and you're not alone. Focus on what you can control — your own energy and response. What exactly did they say or do? 💕",
+  "This sounds like classic push-pull dynamic. When someone pulls away, it's usually about their own emotional availability, not your worth. Have you tried giving a little space intentionally?",
+  "Hmm — red flag or misunderstanding? How long have you two been talking? Context helps me give better advice. 🌸",
+  "Here's the truth: chasing always feels right but rarely works. What if you focused on building attraction by becoming slightly less available for a few days?",
+  "That genuinely hurts. Breakups are one of the hardest human experiences. Give yourself permission to feel it fully — you don't have to rush healing. What's been the hardest part? 💔",
+  "The pattern you're describing — hot one day, cold the next — is called breadcrumbing. It keeps you emotionally hooked without real commitment. You deserve consistency. 🌿"
+];
+
+async function sendMessage() {
+  if (isThinking) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  isThinking = true;
+
+  document.getElementById('quickPrompts').style.display = 'none';
+
+  const msgs = document.getElementById('chatMessages');
+
+  // Add user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.innerHTML = `<div class="bubble">${escHtml(text)}</div><div class="msg-time">Just now</div>`;
+  msgs.appendChild(userDiv);
+
+  // Typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg ai';
+  typingDiv.innerHTML = `<div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  msgs.appendChild(typingDiv);
+  scrollBottom(msgs);
+
+  // Build history
+  chatHistory.push({ role: 'user', content: text });
+
+  try {
+    let reply;
+
+    // Try backend API first
+    if (API_URL && API_URL !== '/api/chat') {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, mode: currentMode, history: chatHistory.slice(-8) })
+      });
+      const data = await res.json();
+      reply = data.reply || data.error || getFallback();
+    }
+    // If local test key provided, call OpenAI directly
+    else if (OPENAI_KEY_TEST) {
+      const sysPrompt = systemPrompts[currentMode] || systemPrompts['Dating Coach'];
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_KEY_TEST}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: sysPrompt },
+            ...chatHistory.slice(-8)
+          ],
+          max_tokens: 300,
+          temperature: 0.8
+        })
+      });
+      const data = await res.json();
+      reply = data.choices?.[0]?.message?.content || getFallback();
+    }
+    else {
+      // Demo mode — random smart replies
+      await new Promise(r => setTimeout(r, 1200));
+      reply = getFallback();
+    }
+
+    chatHistory.push({ role: 'assistant', content: reply });
+    typingDiv.innerHTML = `<div class="bubble">${escHtml(reply)}</div><div class="msg-time">Just now</div>`;
+  } catch(e) {
+    const reply = getFallback();
+    chatHistory.push({ role: 'assistant', content: reply });
+    typingDiv.innerHTML = `<div class="bubble">${escHtml(reply)}</div><div class="msg-time">Just now</div>`;
+  }
+
+  scrollBottom(msgs);
+  isThinking = false;
+}
+
+function getFallback() {
+  return fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+}
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+function scrollBottom(el) {
+  setTimeout(() => el.scrollTop = el.scrollHeight, 50);
+}
+
+// ── ANALYZE ──
+function handleUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  // In full version, upload to your backend here
+  // For now, show demo analysis
+  runDemo();
+}
+
+function runDemo() {
+  const out = document.getElementById('analysisOutput');
+  out.style.display = 'block';
+  document.getElementById('uploadZone').style.display = 'none';
+  setTimeout(() => {
+    ['m1','m2','m3','m4'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.width = el.dataset.val + '%';
+    });
+  }, 200);
+  document.getElementById('scrollArea').scrollTop = 300;
+}
+</script>
+</body>
+</html>
