@@ -52,7 +52,14 @@ body{
 .logo em{font-style:italic}
 .nav-cta{background:var(--rose);color:#fff;border:none;border-radius:100px;padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
 
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.scroll-area{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:140px;
+}
+
 .page{display:none;padding:16px}
 .page.active{display:block}
 
@@ -63,11 +70,13 @@ body{
   transform:translateX(-50%);
   width:100%;
   max-width:430px;
-  background:rgba(253,248,245,0.98);
+  background:rgba(253,248,245,0.92);
+  backdrop-filter:blur(20px);
   border-top:1px solid var(--border);
   display:flex;
   padding:8px 0 max(10px,env(safe-area-inset-bottom));
   z-index:9999;
+  box-shadow:0 -8px 24px rgba(0,0,0,0.04);
 }
 
 /* ── HERO ── */
