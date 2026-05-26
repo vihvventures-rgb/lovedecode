@@ -28,7 +28,7 @@ export default async function handler(req, res) {
         'X-Title': 'LoveDecode'
       },
       body: JSON.stringify({
-       model: 'mistralai/mistral-7b-instruct:free',
+       model: 'openrouter/auto',
         messages: [
           {
             role: 'system',
