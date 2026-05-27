@@ -479,7 +479,39 @@ html,body{
         <div class="profile-sub">Free Plan · 3 chats remaining today</div>
         <div class="attach-badge">📎 Anxious-Secure Blend</div>
       </div>
+<div class="plan-card" style="margin-top:16px">
+  <div class="section-title" style="font-size:20px;margin-bottom:16px">
+    Your Profile
+  </div>
 
+  <div style="display:flex;flex-direction:column;gap:14px">
+
+    <input id="profileNameInput" type="text" placeholder="Your Name"
+      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
+
+    <input id="profileEmailInput" type="email" placeholder="Email Address"
+      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
+
+    <input id="profilePhoneInput" type="tel" placeholder="Phone Number"
+      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
+
+    <select id="profileStatusInput"
+      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px;background:white">
+
+      <option value="Single">Single</option>
+      <option value="Dating">Dating</option>
+      <option value="Situationship">Situationship</option>
+      <option value="In Relationship">In Relationship</option>
+      <option value="Heartbroken">Heartbroken</option>
+
+    </select>
+
+    <button onclick="saveProfile()" class="upgrade-btn">
+      Save Profile
+    </button>
+
+  </div>
+</div>
       <div class="section-title" style="margin-bottom:14px">Upgrade Plan</div>
 
       <div class="plan-card featured">
