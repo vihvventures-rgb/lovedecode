@@ -567,23 +567,6 @@ const API_URL = '/api/chat';
 const OPENAI_KEY_TEST = ''; // paste sk-... here ONLY for local testing
 
 let currentMode = 'Dating Coach';
-  let userProfile = JSON.parse(localStorage.getItem('ld_user_profile') || 'null');
-
-if (!userProfile) {
-  setTimeout(() => {
-    const name = prompt('Enter your name');
-    if (!name) return;
-
-    const email = prompt('Enter your email');
-
-    userProfile = {
-      name,
-      email,
-      createdAt: new Date().toISOString()
-    };
-
-    localStorage.setItem('ld_user_profile', JSON.stringify(userProfile));
-  }, 1000);
 }
 let freeMessages = parseInt(localStorage.getItem('ld_free_msgs') || '10');
 let chatHistory = [];
