@@ -468,6 +468,10 @@ html,body{
     </div>
 
     <!-- ═══ PROFILE PAGE ═══ -->
+    <div id="profileCard" style="background:white;padding:16px;border-radius:20px;border:1px solid #eee;margin-bottom:16px">
+  <h3 id="profileName">User</h3>
+  <p id="profileEmail" style="color:#777"></p>
+</div>
     <div class="page" id="page-profile">
       <div class="profile-header">
         <div class="avatar">🌸</div>
@@ -538,7 +542,19 @@ html,body{
     </button>
   </div>
 </div>
+function loadProfile() {
+  const profile = JSON.parse(localStorage.getItem('ld_user_profile') || 'null');
 
+  if (!profile) return;
+
+  const nameEl = document.getElementById('profileName');
+  const emailEl = document.getElementById('profileEmail');
+
+  if (nameEl) nameEl.innerText = profile.name || 'User';
+  if (emailEl) emailEl.innerText = profile.email || '';
+}
+
+loadProfile();
 <script>
 // ── CHANGE THIS TO YOUR API URL AFTER DEPLOYMENT ──
 // If using Netlify: 'https://lovedecode.netlify.app/.netlify/functions/chat'
@@ -551,6 +567,24 @@ const API_URL = '/api/chat';
 const OPENAI_KEY_TEST = ''; // paste sk-... here ONLY for local testing
 
 let currentMode = 'Dating Coach';
+  let userProfile = JSON.parse(localStorage.getItem('ld_user_profile') || 'null');
+
+if (!userProfile) {
+  setTimeout(() => {
+    const name = prompt('Enter your name');
+    if (!name) return;
+
+    const email = prompt('Enter your email');
+
+    userProfile = {
+      name,
+      email,
+      createdAt: new Date().toISOString()
+    };
+
+    localStorage.setItem('ld_user_profile', JSON.stringify(userProfile));
+  }, 1000);
+}
 let freeMessages = parseInt(localStorage.getItem('ld_free_msgs') || '10');
 let chatHistory = [];
 let isThinking = false;
