@@ -551,6 +551,7 @@ const API_URL = '/api/chat';
 const OPENAI_KEY_TEST = ''; // paste sk-... here ONLY for local testing
 
 let currentMode = 'Dating Coach';
+let freeMessages = parseInt(localStorage.getItem('ld_free_msgs') || '10');
 let chatHistory = [];
 let isThinking = false;
 
@@ -627,9 +628,17 @@ const fallbackReplies = [
 
 async function sendMessage() {
   if (isThinking) return;
+
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
+
   if (!text) return;
+
+  if (freeMessages <= 0) {
+    alert('Free limit reached 💕 Upgrade coming soon.');
+    return;
+  }
+
   input.value = '';
   isThinking = true;
 
@@ -652,6 +661,8 @@ async function sendMessage() {
 
   // Build history
   chatHistory.push({ role: 'user', content: text });
+  freeMessages--;
+localStorage.setItem('ld_free_msgs', freeMessages);
 
   try {
     let reply;
