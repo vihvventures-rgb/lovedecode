@@ -794,6 +794,53 @@ function runDemo() {
   }, 200);
   document.getElementById('scrollArea').scrollTop = 300;
 }
+  function saveProfile() {
+  const profile = {
+    name: document.getElementById('profileNameInput')?.value || '',
+    email: document.getElementById('profileEmailInput')?.value || '',
+    phone: document.getElementById('profilePhoneInput')?.value || '',
+    status: document.getElementById('profileStatusInput')?.value || 'Single'
+  };
+
+  localStorage.setItem('ld_user_profile', JSON.stringify(profile));
+
+  const nameEl = document.querySelector('.profile-name');
+  const statusEl = document.querySelector('.profile-sub');
+
+  if (nameEl && profile.name) {
+    nameEl.innerText = profile.name;
+  }
+
+  if (statusEl) {
+    statusEl.innerText = profile.status;
+  }
+
+  alert('Profile saved 💕');
+}
+
+function loadProfile() {
+  const profile = JSON.parse(localStorage.getItem('ld_user_profile') || '{}');
+
+  if (profile.name) {
+    document.getElementById('profileNameInput').value = profile.name;
+    document.querySelector('.profile-name').innerText = profile.name;
+  }
+
+  if (profile.email) {
+    document.getElementById('profileEmailInput').value = profile.email;
+  }
+
+  if (profile.phone) {
+    document.getElementById('profilePhoneInput').value = profile.phone;
+  }
+
+  if (profile.status) {
+    document.getElementById('profileStatusInput').value = profile.status;
+    document.querySelector('.profile-sub').innerText = profile.status;
+  }
+}
+
+loadProfile();
 </script>
 </body>
 </html>
