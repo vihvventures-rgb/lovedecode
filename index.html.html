@@ -481,8 +481,7 @@ body{
         <div class="profile-sub">Free Plan · 3 chats remaining today</div>
         <div class="attach-badge">📎 Anxious-Secure Blend</div>
       </div>
-<div class="plan-card" style="margin-bottom:16px">
-
+<div class="plan-card" id="authButtons" style="margin-bottom:16px">
   <button onclick="googleLogin()" class="upgrade-btn">
     Continue with Google
   </button>
@@ -836,15 +835,30 @@ function updateProfileUI(user) {
 
 }
 
+```js id="m57kgi"
 onAuthStateChanged(auth, (user) => {
+
+  const authButtons = document.getElementById('authButtons');
 
   if (user) {
 
     updateProfileUI(user);
 
+    if (authButtons) {
+      authButtons.style.display = 'none';
+    }
+
+  } else {
+
+    if (authButtons) {
+      authButtons.style.display = 'block';
+    }
+
   }
 
 });
+```
+
 
 </script>
 ```
