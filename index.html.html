@@ -223,76 +223,6 @@ body{
 .quick-prompts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .qp-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--muted);cursor:pointer;text-align:left;transition:all .2s;font-family:'DM Sans',sans-serif}
 .qp-btn:hover{border-color:var(--rose-mid);color:var(--rose);background:var(--rose-light)}
-html,body{
-  min-height:100%;
-  overflow:hidden;
-}
-
-.app{
-  display:flex;
-  flex-direction:column;
-  height:100dvh;
-  max-width:430px;
-  margin:0 auto;
-  position:relative;
-}
-
-.scroll-area{
-  flex:1;
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  padding-bottom:20px;
-}
-
-.tabbar{
-  flex-shrink:0;
-  background:rgba(253,248,245,0.98);
-  border-top:1px solid var(--border);
-  display:flex;
-  padding:8px 0 max(12px,env(safe-area-inset-bottom));
-  z-index:9999;
-}
-
-.tab{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  padding:6px 0;
-  cursor:pointer;
-  border:none;
-  background:none;
-  color:var(--muted);
-  font-size:10px;
-  font-family:'DM Sans',sans-serif;
-}
-
-.tab svg{
-  width:22px;
-  height:22px;
-  stroke:currentColor;
-  fill:none !important;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.tab.active{
-  color:var(--rose);
-}
-  #page-chat{
-  padding-bottom:95px;
-}
-
-#page-chat .chat-input-wrap{
-  position:sticky;
-  bottom:85px;
-  z-index:10000;
-  margin-top:10px;
-}
 </style>
 </head>
 <body>
@@ -475,39 +405,7 @@ html,body{
         <div class="profile-sub">Free Plan · 3 chats remaining today</div>
         <div class="attach-badge">📎 Anxious-Secure Blend</div>
       </div>
-<div class="plan-card" style="margin-top:16px">
-  <div class="section-title" style="font-size:20px;margin-bottom:16px">
-    Your Profile
-  </div>
 
-  <div style="display:flex;flex-direction:column;gap:14px">
-
-    <input id="profileNameInput" type="text" placeholder="Your Name"
-      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
-
-    <input id="profileEmailInput" type="email" placeholder="Email Address"
-      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
-
-    <input id="profilePhoneInput" type="tel" placeholder="Phone Number"
-      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px">
-
-    <select id="profileStatusInput"
-      style="padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px;background:white">
-
-      <option value="Single">Single</option>
-      <option value="Dating">Dating</option>
-      <option value="Situationship">Situationship</option>
-      <option value="In Relationship">In Relationship</option>
-      <option value="Heartbroken">Heartbroken</option>
-
-    </select>
-
-    <button onclick="saveProfile()" class="upgrade-btn">
-      Save Profile
-    </button>
-
-  </div>
-</div>
       <div class="section-title" style="margin-bottom:14px">Upgrade Plan</div>
 
       <div class="plan-card featured">
@@ -570,6 +468,7 @@ html,body{
     </button>
   </div>
 </div>
+
 <script>
 // ── CHANGE THIS TO YOUR API URL AFTER DEPLOYMENT ──
 // If using Netlify: 'https://lovedecode.netlify.app/.netlify/functions/chat'
@@ -582,8 +481,6 @@ const API_URL = '/api/chat';
 const OPENAI_KEY_TEST = ''; // paste sk-... here ONLY for local testing
 
 let currentMode = 'Dating Coach';
-}
-let freeMessages = parseInt(localStorage.getItem('ld_free_msgs') || '10');
 let chatHistory = [];
 let isThinking = false;
 
@@ -660,17 +557,9 @@ const fallbackReplies = [
 
 async function sendMessage() {
   if (isThinking) return;
-
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
-
   if (!text) return;
-
-  if (freeMessages <= 0) {
-    alert('Free limit reached 💕 Upgrade coming soon.');
-    return;
-  }
-
   input.value = '';
   isThinking = true;
 
@@ -693,8 +582,6 @@ async function sendMessage() {
 
   // Build history
   chatHistory.push({ role: 'user', content: text });
-  freeMessages--;
-localStorage.setItem('ld_free_msgs', freeMessages);
 
   try {
     let reply;
@@ -777,46 +664,6 @@ function runDemo() {
   }, 200);
   document.getElementById('scrollArea').scrollTop = 300;
 }
- function saveProfile() {
-  const profile = {
-    name: document.getElementById('profileNameInput')?.value || '',
-    email: document.getElementById('profileEmailInput')?.value || '',
-    phone: document.getElementById('profilePhoneInput')?.value || ''
-  };
-
-  localStorage.setItem('ld_user_profile', JSON.stringify(profile));
-
-  const profileName = document.querySelector('.profile-name');
-
-  if (profileName && profile.name) {
-    profileName.innerText = profile.name;
-  }
-
-  alert('Profile saved 💕');
-}
-
-function loadProfile() {
-  const profile = JSON.parse(localStorage.getItem('ld_user_profile') || '{}');
-
-  if (profile.name && document.getElementById('profileNameInput')) {
-    document.getElementById('profileNameInput').value = profile.name;
-  }
-
-  if (profile.email && document.getElementById('profileEmailInput')) {
-    document.getElementById('profileEmailInput').value = profile.email;
-  }
-
-  if (profile.phone && document.getElementById('profilePhoneInput')) {
-    document.getElementById('profilePhoneInput').value = profile.phone;
-  }
-
-  if (profile.name && document.querySelector('.profile-name')) {
-    document.querySelector('.profile-name').innerText = profile.name;
-  }
-}
-
-setTimeout(loadProfile, 300);
-  
 </script>
 </body>
 </html>
