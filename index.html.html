@@ -750,7 +750,7 @@ function runDemo() {
   document.getElementById('scrollArea').scrollTop = 300;
 }
 </script>
-  ```html
+  
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
@@ -782,8 +782,7 @@ provider.setCustomParameters({
   prompt: 'select_account'
 });
 
-window.googleLogin = async function () {
-
+async function googleLogin() {
   try {
 
     const result = await signInWithPopup(auth, provider);
@@ -806,8 +805,7 @@ window.googleLogin = async function () {
 
 };
 
-window.logoutUser = async function () {
-
+async function logoutUser() {
   await signOut(auth);
 
   localStorage.removeItem('ld_user');
@@ -834,9 +832,6 @@ function updateProfileUI(user) {
   }
 
 }
-
-```js id="m57kgi"
-```js id="m3r9z0"
 onAuthStateChanged(auth, (user) => {
 
   const authButtons = document.getElementById('authButtons');
@@ -858,11 +853,9 @@ onAuthStateChanged(auth, (user) => {
   }
 
 });
-```
 
-</script>
-```
-
+window.googleLogin = googleLogin;
+window.logoutUser = logoutUser;
 </script>
 </body>
 </html>
