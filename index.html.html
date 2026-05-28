@@ -570,19 +570,6 @@ html,body{
     </button>
   </div>
 </div>
-function loadProfile() {
-  const profile = JSON.parse(localStorage.getItem('ld_user_profile') || 'null');
-
-  if (!profile) return;
-
-  const nameEl = document.getElementById('profileName');
-  const emailEl = document.getElementById('profileEmail');
-
-  if (nameEl) nameEl.innerText = profile.name || 'User';
-  if (emailEl) emailEl.innerText = profile.email || '';
-}
-
-loadProfile();
 <script>
 // ── CHANGE THIS TO YOUR API URL AFTER DEPLOYMENT ──
 // If using Netlify: 'https://lovedecode.netlify.app/.netlify/functions/chat'
@@ -837,6 +824,7 @@ function loadProfile() {
 }
 
 loadProfile();
+  
 </script>
 </body>
 </html>
