@@ -777,25 +777,19 @@ function runDemo() {
   }, 200);
   document.getElementById('scrollArea').scrollTop = 300;
 }
-  function saveProfile() {
+ function saveProfile() {
   const profile = {
     name: document.getElementById('profileNameInput')?.value || '',
     email: document.getElementById('profileEmailInput')?.value || '',
-    phone: document.getElementById('profilePhoneInput')?.value || '',
-    status: document.getElementById('profileStatusInput')?.value || 'Single'
+    phone: document.getElementById('profilePhoneInput')?.value || ''
   };
 
   localStorage.setItem('ld_user_profile', JSON.stringify(profile));
 
-  const nameEl = document.querySelector('.profile-name');
-  const statusEl = document.querySelector('.profile-sub');
+  const profileName = document.querySelector('.profile-name');
 
-  if (nameEl && profile.name) {
-    nameEl.innerText = profile.name;
-  }
-
-  if (statusEl) {
-    statusEl.innerText = profile.status;
+  if (profileName && profile.name) {
+    profileName.innerText = profile.name;
   }
 
   alert('Profile saved 💕');
@@ -804,26 +798,24 @@ function runDemo() {
 function loadProfile() {
   const profile = JSON.parse(localStorage.getItem('ld_user_profile') || '{}');
 
-  if (profile.name) {
+  if (profile.name && document.getElementById('profileNameInput')) {
     document.getElementById('profileNameInput').value = profile.name;
-    document.querySelector('.profile-name').innerText = profile.name;
   }
 
-  if (profile.email) {
+  if (profile.email && document.getElementById('profileEmailInput')) {
     document.getElementById('profileEmailInput').value = profile.email;
   }
 
-  if (profile.phone) {
+  if (profile.phone && document.getElementById('profilePhoneInput')) {
     document.getElementById('profilePhoneInput').value = profile.phone;
   }
 
-  if (profile.status) {
-    document.getElementById('profileStatusInput').value = profile.status;
-    document.querySelector('.profile-sub').innerText = profile.status;
+  if (profile.name && document.querySelector('.profile-name')) {
+    document.querySelector('.profile-name').innerText = profile.name;
   }
 }
 
-loadProfile();
+setTimeout(loadProfile, 300);
   
 </script>
 </body>
