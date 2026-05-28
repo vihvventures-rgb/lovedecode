@@ -537,8 +537,14 @@ body{
         <div class="setting-row"><span>Private Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
         <div class="setting-row"><span>Daily Relationship Tips</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
         <div class="setting-row"><span>Dark Mode</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
-        <button onclick="logoutUser()" class="upgrade-btn mauve" style="margin-top:20px">
-  Logout
+<div id="logoutSection" style="display:none">
+
+  <button onclick="logoutUser()" class="upgrade-btn mauve" style="margin-top:20px">
+    Logout
+  </button>
+
+</div>
+
 </button>
       </div>
     </div>
@@ -848,7 +854,11 @@ onAuthStateChanged(auth, (user) => {
 
   const authButtons = document.getElementById('authButtons');
 
-  if (user) {
+  if (user) { const logoutSection = document.getElementById('logoutSection');
+
+if (logoutSection) {
+  logoutSection.style.display = 'block';
+}
 
     updateProfileUI(user);
 
@@ -856,7 +866,11 @@ onAuthStateChanged(auth, (user) => {
       authButtons.style.display = 'none';
     }
 
-  } else {
+  } else { const logoutSection = document.getElementById('logoutSection');
+
+if (logoutSection) {
+  logoutSection.style.display = 'none';
+}
 
     if (authButtons) {
       authButtons.style.display = 'block';
