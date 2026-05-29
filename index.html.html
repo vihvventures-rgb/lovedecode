@@ -730,6 +730,7 @@ async function sendMessage() {
     const reply = getFallback();
     chatHistory.push({ role: 'assistant', content: reply });
     typingDiv.innerHTML = `<div class="bubble">${escHtml(reply)}</div><div class="msg-time">Just now</div>`;
+    console.log("Current User:", currentUser);
     if (currentUser) {
 
   try {
