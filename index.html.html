@@ -730,6 +730,33 @@ async function sendMessage() {
     const reply = getFallback();
     chatHistory.push({ role: 'assistant', content: reply });
     typingDiv.innerHTML = `<div class="bubble">${escHtml(reply)}</div><div class="msg-time">Just now</div>`;
+    if (currentUser) {
+
+  try {
+
+    await addDoc(collection(db, "chats"), {
+
+      userId: currentUser.uid,
+
+      email: currentUser.email,
+
+      mode: currentMode,
+
+      userMessage: text,
+
+      aiReply: reply,
+
+      createdAt: serverTimestamp()
+
+    });
+
+  } catch (err) {
+
+    console.log("Firestore save failed", err);
+
+  }
+
+}
   }
 
   scrollBottom(msgs);
@@ -780,6 +807,7 @@ import {
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  
 import {
   getFirestore,
   addDoc,
