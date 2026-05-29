@@ -780,7 +780,12 @@ import {
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBnqoWoAmKgj8pVDqL68EeFSd7h5qmgQfo",
   authDomain: "love-decode-15355.firebaseapp.com",
@@ -793,7 +798,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-
+const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({
@@ -850,11 +855,15 @@ function updateProfileUI(user) {
   }
 
 }
+  
+let currentUser = null;
+
 onAuthStateChanged(auth, (user) => {
 
   const authButtons = document.getElementById('authButtons');
 
-  if (user) { const logoutSection = document.getElementById('logoutSection');
+  if (user) {
+currentUser = user; const logoutSection = document.getElementById('logoutSection');
 
 if (logoutSection) {
   logoutSection.style.display = 'block';
